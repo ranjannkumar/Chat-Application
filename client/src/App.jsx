@@ -1,12 +1,19 @@
-import React from 'react'
+import React,{lazy} from 'react'
 import {Routes,Route,BrowserRouter} from 'react-router-dom'
+
+const Home=lazy(()=> import('./pages/Home'));
+const Login=lazy(()=> import('./pages/Login'));
+const Chat=lazy(()=> import('./pages/Chat'));
+const Groups=lazy(()=> import('./pages/Groups'));
 
 const App = () => {
   return (
     <BrowserRouter>
     <Routes>
-      <Route path="/" element={<h1>Home</h1>} />
-      <Route path="about" element={<h1>About</h1>} />
+      <Route path="/" element={<Home />} />
+      <Route path="/chat/:chatId" element={<Chat />} />
+      <Route path="/groups" element={<Groups/>} />
+      <Route path="/login" element={<Login />} />
     </Routes>
     </BrowserRouter>
   )
