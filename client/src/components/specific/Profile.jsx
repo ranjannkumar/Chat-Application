@@ -10,7 +10,7 @@ import moment from "moment"
 const Profile = () => {
   return (
     <Stack 
-      spacing={"2rem"}
+      spacing={"1rem"}
       direction={"column"}
       alignItems={"center"}
      > 

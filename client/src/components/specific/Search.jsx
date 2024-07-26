@@ -5,7 +5,6 @@ import {
    TextField,
    InputAdornment,
    List,
-   ListItem,
   } from '@mui/material';
 import React, { useState } from 'react';
 import {useInputValidation} from "6pp"
@@ -21,9 +20,7 @@ const Search = () => {
   let isLoadingSendFriendRequest = false;
   const [users,setUsers] = useState(sampleUsers)
 
-  const addFriendHandler =(id)=>{
-    console.log(id);
-  }
+  const addFriendHandler =(id)=>{};
 
   return <Dialog open>
     <Stack p={"2rem"} direction={"column"} width={"25rem"}>
