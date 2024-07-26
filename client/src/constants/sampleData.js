@@ -29,3 +29,21 @@
     },
   ]
 
+
+  export const sampleNotifications= [
+    {
+      sender:{
+        avatar: "https://www.w3schools.com/howto/img_avatar.png",
+        name: "Virat Kohli",
+      },
+      _id: "1",
+    },
+    {
+       sender:{
+        avatar: "https://www.w3schools.com/howto/img_avatar.png",
+        name: "Ranjan Shah",
+       },
+      _id: "2",
+    },
+  ]
+

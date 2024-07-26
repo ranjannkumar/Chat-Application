@@ -6,7 +6,6 @@ import {
    InputAdornment,
    List,
    ListItem,
-   ListItemText
   } from '@mui/material';
 import React, { useState } from 'react';
 import {useInputValidation} from "6pp"
