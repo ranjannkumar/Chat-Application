@@ -1,12 +1,20 @@
-import React, { Fragment,containerRef } from 'react'
+import React, { Fragment, useRef } from 'react'
 import AppLayout from '../components/layout/AppLayout'
 import { IconButton, Stack } from '@mui/material';
 import { grayColor, orange } from '../constants/color';
-import { AttachFile as AttachFileIcon, Send as SendIcon } from '@mui/icons-material';
+import { AttachFile as AttachFileIcon, Message, Send as SendIcon } from '@mui/icons-material';
 import { InputBox } from '../components/styles/StyledComponents';
 import FileMenu from '../components/dialogs/FileMenu';
+import { sampleMessage } from '../constants/sampleData';
+import MessageComponent from '../components/shared/MessageComponent';
 
+
+const user ={
+  _id:"sdfsdsfds",
+  name:"Ranjan"
+}
 const Chat = () => {
+  const containerRef = useRef(null);
   return (
     <Fragment>
       <Stack 
@@ -21,7 +29,11 @@ const Chat = () => {
           overflowY: "auto",
         }}
       >
-        {/* messages render */}
+        {
+          sampleMessage.map((i)=>(
+            <MessageComponent key={i._id} message={i} user={user} />
+          ))
+        }
       </Stack>
       <form
         style={{
