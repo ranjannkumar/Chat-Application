@@ -1,5 +1,5 @@
-import React, { memo, useEffect, useState } from 'react'
-import {Box, Button, Drawer, Grid, IconButton, Menu, Stack, TextField, Tooltip, Typography} from '@mui/material'
+import React, { lazy, memo, Suspense, useEffect, useState } from 'react'
+import {Backdrop, Box, Button, Drawer, Grid, IconButton, Menu, Stack, TextField, Tooltip, Typography} from '@mui/material'
 import{
   Add as AddIcon,
   Delete as DeleteIcon,
@@ -13,6 +13,17 @@ import {useNavigate,useSearchParams} from 'react-router-dom'
 import {Link} from '../components/styles/StyledComponents'
 import AvatarCard from '../components/shared/AvatarCard'
 import {sampleChats} from '../constants/sampleData'
+
+const ConfirmDeleteDialog = lazy(()=>
+   import("../components/dialogs/ConfirmDeleteDialog")
+)
+
+const AddMemberDialog=lazy(()=>
+  import("../components/dialogs/AddMemberDialog")
+)
+
+
+const isAddMember =true;
 
 
 const Groups = () => {
@@ -55,6 +66,11 @@ const Groups = () => {
 
   const openAddMemberHandler=()=>{
     console.log("Add Member");
+  };
+
+  const deleteHandler=()=>{
+    console.log("Delete Handler");
+    closeConfirmDeleteHandler();
   }
 
   useEffect(()=>{
@@ -233,8 +249,23 @@ const Groups = () => {
       </Grid>
 
       {
-        confirmDeleteDialog && <>df</>
+        isAddMember && (
+          <Suspense fallback={<Backdrop open />}>
+            <AddMemberDialog />
+          </Suspense>
+        )
+      }
 
+      {
+        confirmDeleteDialog && (
+          <Suspense fallback={<Backdrop open />}>
+            <ConfirmDeleteDialog 
+              open={confirmDeleteDialog}
+              handleClose={closeConfirmDeleteHandler}
+              deleteHandler={deleteHandler}
+            />
+          </Suspense>
+        )
       }
 
       <Drawer
