@@ -18,8 +18,13 @@ const AddMemberDialog = ({addMember,isLoadingAddMember,chatId}) => {
 
 
 
-  const closeHandler=()=>{};
-  const addMemberSubmitHandler=()=>{};
+  const closeHandler=()=>{
+    setSelectedMembers([]);
+    setMembers([])
+  };
+  const addMemberSubmitHandler=()=>{
+    closeHandler()
+  };
   return (
     <Dialog open onClose={closeHandler}>
       <Stack
@@ -32,8 +37,8 @@ const AddMemberDialog = ({addMember,isLoadingAddMember,chatId}) => {
         <Stack
           spacing={"1rem"}
         >
-          {sampleUsers.length >0 ? (
-            sampleUsers.map((i)=>(
+          {members.length >0 ? (
+            members.map((i)=>(
               <UserItem 
                 key={i.id} 
                 user={i} 

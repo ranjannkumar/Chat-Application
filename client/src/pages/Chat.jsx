@@ -2,7 +2,7 @@ import React, { Fragment, useRef } from 'react'
 import AppLayout from '../components/layout/AppLayout'
 import { IconButton, Stack } from '@mui/material';
 import { grayColor, orange } from '../constants/color';
-import { AttachFile as AttachFileIcon, Message, Send as SendIcon } from '@mui/icons-material';
+import { AttachFile as AttachFileIcon, Send as SendIcon } from '@mui/icons-material';
 import { InputBox } from '../components/styles/StyledComponents';
 import FileMenu from '../components/dialogs/FileMenu';
 import { sampleMessage } from '../constants/sampleData';
