@@ -309,6 +309,7 @@ const GroupsList =({ w ="100%" ,myGroups = [],chatId})=>(
     sx={{
       backgroundImage: bgGradient,
       height:'100vh',
+      overflow:"auto",
     }}
   >
     {
