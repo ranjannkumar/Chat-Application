@@ -76,5 +76,26 @@
       chat: "chatId",
       createdAt:"2024-07-26T09:50:00.000Z",
     },
-  ]
+  ];
+
+  export const dashboardData={
+    users:[
+      {
+        name: "Virat Kohli",
+        avatar: ["https://www.w3schools.com/howto/img_avatar.png"],
+        _id: "1",
+        username: "virat_kohli",
+        friends: 20,
+        groups: 5,
+      },
+      {
+        name: "Ranjan Shah",
+        avatar: ["https://www.w3schools.com/howto/img_avatar.png"],
+        _id: "2",
+        username: "ranjan_shah",
+        friends: 20,
+        groups: 5,
+      },
+    ],
+  }
 
