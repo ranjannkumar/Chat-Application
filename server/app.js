@@ -1,6 +1,6 @@
 import express from "express";
 import userRoute from "./routes/user.route.js"
-import connectDB  from "./utils/features.js";
+import {connectDB}  from "./utils/features.js";
 import dotenv from "dotenv";
 
 dotenv.config({
@@ -15,6 +15,8 @@ const app = express();
 
 
 //middlewares
+app.use(express.json())
+
 app.use('/user',userRoute);
 
 app.get("/",(req,res)=>{
