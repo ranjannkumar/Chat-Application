@@ -4,7 +4,7 @@ import { sendToken } from "../utils/features.js";
 import { TryCatch } from "../middlewares/error.middleware.js";
 import { ErrorHandler } from "../utils/utility.js";
 
-
+//Create a new user and save it to the database and save token in cookie
 const newUser = async(req,res)=>{
   const {name,username,password,bio} = req.body;
   const avatar={
@@ -21,6 +21,7 @@ const newUser = async(req,res)=>{
   sendToken(res,user,201,"User created");
 };
 
+//login user and save token in cookie
 const login = TryCatch( async(req,res,next)=>{
   const {username,password} = req.body;
   const user=await User.findOne({username}).select("+password");
@@ -34,6 +35,13 @@ const login = TryCatch( async(req,res,next)=>{
 
 });
 
-const getMyProfile = async(req,res)=>{};
+const getMyProfile = TryCatch(async(req,res)=>{
+  const user = await User.findById(req.user);
+    res.status(200).json({
+      success: true,
+      user,
+    })
+  }
+);
 
 export{ login,newUser,getMyProfile }
