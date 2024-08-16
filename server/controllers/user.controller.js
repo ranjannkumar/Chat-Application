@@ -55,4 +55,15 @@ const logout = TryCatch(async(req,res)=>{
   }
 );
 
-export{ login,newUser,getMyProfile,logout }
+const searchUser = TryCatch(async(req,res)=>{
+  const {name}=req.query;
+  res
+    .status(200)
+    .json({
+    success: true,
+    message:name,
+  });
+}
+);
+
+export{ login,newUser,getMyProfile,logout,searchUser }

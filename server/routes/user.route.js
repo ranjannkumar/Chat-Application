@@ -1,5 +1,5 @@
 import express from "express";
-import { getMyProfile, login, logout, newUser } from "../controllers/user.controller.js";
+import { getMyProfile, login, logout, newUser, searchUser } from "../controllers/user.controller.js";
 import { singleAvatar } from "../middlewares/multer.middleware.js";
 import { isAuthenticated } from "../middlewares/auth.middleware.js";
 
@@ -12,5 +12,6 @@ app.post("/login",login)
 app.use(isAuthenticated);
 app.get("/me",getMyProfile);
 app.get("/logout",logout);
+app.get("/search",searchUser)
 
 export default app;
