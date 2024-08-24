@@ -5,8 +5,6 @@ import { errorMiddleware } from "./middlewares/error.middleware.js";
 import cookieParser from "cookie-parser";
 import userRoute from "./routes/user.route.js"
 import chatRoute from "./routes/chat.route.js"
-import { createUser } from "./seeders/user.seeder.js";
-
 
 dotenv.config({
   path:"./.env",

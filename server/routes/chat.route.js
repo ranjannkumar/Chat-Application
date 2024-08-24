@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticated } from "../middlewares/auth.middleware.js";
-import { addMembers, deleteChat, getChatDetails, getMyChats, getMyGroups, leaveGroup, newGroupChat, removeMember, renameGroup, sendAttachments } from "../controllers/chat.controller.js";
+import { addMembers, deleteChat, getChatDetails, getMessages, getMyChats, getMyGroups, leaveGroup, newGroupChat, removeMember, renameGroup, sendAttachments } from "../controllers/chat.controller.js";
 import { attachmentsMulter } from "../middlewares/multer.middleware.js";
 
 const app = express.Router();
@@ -21,6 +21,7 @@ app.delete("/leave/:id",leaveGroup);
 //send attachments
 app.post("/message",attachmentsMulter,sendAttachments);
 //get messages
+app.get("/message/:id",getMessages)
 //get chat details,rename,delete
 app.route("/:id").get(getChatDetails).put(renameGroup).delete(deleteChat);
 
