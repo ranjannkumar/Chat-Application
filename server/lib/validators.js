@@ -53,6 +53,15 @@ const leaveGroupValidator = ()=>[
   param("id","Please Enter chat ID").notEmpty(),
 ];
 
+const sendAttachmentsValidator = ()=>[
+  body("chatid","Please Enter Chat ID").notEmpty(),
+  check("avatar")
+   .notEmpty()
+   .withMessage("Please Upload Avatar")
+   .isArray({min: 1, max: 5})
+   .withMessage("Attachments must be 1-5"),
+]
+
 
 
 export {
@@ -63,4 +72,5 @@ export {
   addMemberValidator,
   removeMemberValidator,
   leaveGroupValidator,
+  sendAttachmentsValidator,
 };
