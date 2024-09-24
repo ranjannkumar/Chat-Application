@@ -49,18 +49,25 @@ const removeMemberValidator = ()=>[
 
 ];
 
-const leaveGroupValidator = ()=>[
-  param("id","Please Enter chat ID").notEmpty(),
-];
+
 
 const sendAttachmentsValidator = ()=>[
   body("chatid","Please Enter Chat ID").notEmpty(),
-  check("avatar")
+  check("files")
    .notEmpty()
-   .withMessage("Please Upload Avatar")
+   .withMessage("Please Upload Attachments")
    .isArray({min: 1, max: 5})
    .withMessage("Attachments must be 1-5"),
-]
+];
+
+const chatIdValidator = ()=>[
+  param("id","Please Enter Chat ID").notEmpty(),
+];
+
+const renameValidator = ()=>[
+  param("id","Please Enter Chat ID").notEmpty(),
+  body("name","Please Enter New Name").notEmpty(),
+];
 
 
 
@@ -71,6 +78,7 @@ export {
   newGroupValidator,
   addMemberValidator,
   removeMemberValidator,
-  leaveGroupValidator,
   sendAttachmentsValidator,
+  chatIdValidator,
+  renameValidator,
 };
