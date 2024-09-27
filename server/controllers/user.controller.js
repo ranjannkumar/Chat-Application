@@ -1,9 +1,11 @@
 import { compare } from "bcrypt";
 import {User} from "../models/user.model.js"
 import {Chat} from "../models/chat.model.js"
-import { cookieOptions, sendToken } from "../utils/features.js";
+import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
 import { TryCatch } from "../middlewares/error.middleware.js";
 import { ErrorHandler } from "../utils/utility.js";
+import {Request} from "../models/request.model.js";
+import { NEW_REQUEST } from "../constants/events.constant.js";
 
 //Create a new user and save it to the database and save token in cookie
 const newUser = async(req,res)=>{
@@ -59,7 +61,7 @@ const logout = TryCatch(async(req,res)=>{
 const searchUser = TryCatch(async(req,res)=>{
   const {name=""}=req.query;
   const myChats = await Chat.find({groupChat: false, members: req.user});
-  
+
   const allUsersFromMyChats = myChats.map((chat)=>chat.members).flat();
 
   const allUsersExceptMeAndFriends = await User.find({
@@ -82,4 +84,36 @@ const searchUser = TryCatch(async(req,res)=>{
 }
 );
 
-export{ login,newUser,getMyProfile,logout,searchUser }
+const sendFriendRequest = TryCatch(async(req,res)=>{
+  const {userId} = req.body;
+  const request = await Request.findOne({
+    $or: [
+      { sender: req.user, receiver: userId},
+      { sender: userId, receiver: req.user},
+    ],
+  });
+  if(request) return next(new ErrorHandler("Request already sent",400));
+
+  await Request.create({
+    sender: req.user,
+    receiver: userId,
+  });
+
+  emitEvent(req,NEW_REQUEST,[userId]);
+ return res
+    .status(200)
+    .json({
+    success: true,
+    message:"Friend Request Sent",
+  });
+}
+);
+
+export{ 
+  login,
+  newUser,
+  getMyProfile,
+  logout,
+  searchUser,
+  sendFriendRequest,
+ }
