@@ -1,8 +1,8 @@
 import express from "express";
-import { getMyProfile, login, logout, newUser, searchUser, sendFriendRequest } from "../controllers/user.controller.js";
+import { acceptFriendRequest, getMyProfile, login, logout, newUser, searchUser, sendFriendRequest } from "../controllers/user.controller.js";
 import { singleAvatar } from "../middlewares/multer.middleware.js";
 import { isAuthenticated } from "../middlewares/auth.middleware.js";
-import { loginValidator, registerValidator, sendRequestValidator, validateHandler } from "../lib/validators.js";
+import { acceptRequestValidator, loginValidator, registerValidator, sendRequestValidator, validateHandler } from "../lib/validators.js";
 
 const app = express.Router();
 
@@ -19,6 +19,13 @@ app.put(
   sendRequestValidator(),
   validateHandler,
   sendFriendRequest,
+);
+
+app.put(
+  "/acceptrequest",
+  acceptRequestValidator(),
+  validateHandler,
+  acceptFriendRequest,
 );
 
 
