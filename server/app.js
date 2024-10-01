@@ -5,6 +5,7 @@ import { errorMiddleware } from "./middlewares/error.middleware.js";
 import cookieParser from "cookie-parser";
 import userRoute from "./routes/user.route.js"
 import chatRoute from "./routes/chat.route.js"
+import adminRoute from "./routes/admin.route.js"
 
 dotenv.config({
   path:"./.env",
@@ -23,6 +24,8 @@ app.use(cookieParser())
 
 app.use('/user',userRoute);
 app.use('/chat',chatRoute);
+app.use('/admin',adminRoute);
+
 
 
 app.get("/",(req,res)=>{
