@@ -1,8 +1,34 @@
+import jwt from "jsonwebtoken"
 import { TryCatch } from "../middlewares/error.middleware.js";
 import { Chat } from "../models/chat.model.js";
 import { User } from "../models/user.model.js";
 import { Message } from "../models/message.model.js";
+import { ErrorHandler } from "../utils/utility.js";
+import {cookieOptions} from "../utils/features.js"
 
+
+const adminLogin = TryCatch(async(req,res,next)=>{ 
+  const {secretKey} = req.body;
+
+  const adminSecretKey = process.env.ADMIN_SECRET_KEY || "ranjan";
+
+  const isMatched = secretKey===adminSecretKey;
+
+  if(!isMatched) return next(new ErrorHandler("Invalid Admin Key",401));
+
+  const token = jwt.sign(secretKey,process.env.JWT_SECRET);
+
+  return res
+    .status(200)
+    .cookie("chattu-admin-token",token, {
+      ...cookieOptions,
+      maxAge:1000*60*15,
+    })
+    .json({
+      succes:true,
+      message: "Authenticated Successfully,Welcome BOSS",
+    });
+});
 
 const allUsers = TryCatch(async(req,res)=>{
   const users = await User.find({});
@@ -141,4 +167,5 @@ export{
   allChats,
   allMessages,
   getDashboardStats,
+  adminLogin,
 }
