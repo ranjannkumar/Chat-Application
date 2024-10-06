@@ -30,6 +30,20 @@ const adminLogin = TryCatch(async(req,res,next)=>{
     });
 });
 
+const adminLogout = TryCatch(async(req,res,next)=>{ 
+ 
+  return res
+    .status(200)
+    .cookie("chattu-admin-token","", {
+      ...cookieOptions,
+      maxAge:0,
+    })
+    .json({
+      succes:true,
+      message: "Logged Out Successfully",
+    });
+});
+
 const allUsers = TryCatch(async(req,res)=>{
   const users = await User.find({});
 
@@ -168,4 +182,5 @@ export{
   allMessages,
   getDashboardStats,
   adminLogin,
+  adminLogout,
 }
