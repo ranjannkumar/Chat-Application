@@ -12,7 +12,9 @@ dotenv.config({
 })
 
 const port = process.env.PORT || 3000;
-export const adminSecretKey = process.env.ADMIN_SECRET_KEY || "agsdgsjdhg";
+ const envMode = process.env.NODE_ENV.trim() || "PRODUCTION";
+
+ const adminSecretKey = process.env.ADMIN_SECRET_KEY || "agsdgsjdhg";
 
 connectDB();
 
@@ -38,5 +40,10 @@ app.use(errorMiddleware);
 
 
 app.listen(port,()=>{
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port ${port} in ${envMode} Mode`);
 })
+
+export{
+  envMode,
+  adminSecretKey,
+}
