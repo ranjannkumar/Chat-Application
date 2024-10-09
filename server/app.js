@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import userRoute from "./routes/user.route.js"
 import chatRoute from "./routes/chat.route.js"
 import adminRoute from "./routes/admin.route.js"
+import { Server } from "socket.io";
+import {createServer} from "http"
 
 dotenv.config({
   path:"./.env",
@@ -20,6 +22,8 @@ connectDB();
 
 
 const app = express();
+const server = createServer(app);
+const io = new Server(server,{});
 
 
 //middlewares
@@ -36,10 +40,18 @@ app.get("/",(req,res)=>{
   res.send("Hello World");
 });
 
+io.on("connection",(socket)=>{
+  console.log("a user connected",socket.id);
+
+  socket.on("disconnect",()=>{
+    console.log("user disconnected");
+  });
+})
+
 app.use(errorMiddleware);
 
 
-app.listen(port,()=>{
+server.listen(port,()=>{
   console.log(`Server is running on port ${port} in ${envMode} Mode`);
 })
 
