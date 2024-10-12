@@ -8,6 +8,8 @@ import chatRoute from "./routes/chat.route.js"
 import adminRoute from "./routes/admin.route.js"
 import { Server } from "socket.io";
 import {createServer} from "http"
+import { v4 as uuid } from "uuid";
+import { NEW_MESSAGE } from "./constants/events.constant.js";
 
 dotenv.config({
   path:"./.env",
@@ -41,7 +43,28 @@ app.get("/",(req,res)=>{
 });
 
 io.on("connection",(socket)=>{
+
+  const user ={
+    _id: "adgshd",
+    name: "Namdjhi",
+  }
   console.log("a user connected",socket.id);
+
+  socket.on(NEW_MESSAGE,async({chatId,members,message})=>{
+
+    const messageForRealTime = {
+      content: message,
+      _id: uuid(),
+      sender:{
+        _id: user._id,
+        name: user.name,
+      },
+      chat: chatId,
+      createdAt: new Date().toISOString(),
+    };
+    console.log("New Message",messageForRealTime);
+    
+  })
 
   socket.on("disconnect",()=>{
     console.log("user disconnected");
