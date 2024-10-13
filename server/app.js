@@ -9,7 +9,9 @@ import adminRoute from "./routes/admin.route.js"
 import { Server } from "socket.io";
 import {createServer} from "http"
 import { v4 as uuid } from "uuid";
-import { NEW_MESSAGE } from "./constants/events.constant.js";
+import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.constant.js";
+import { getSockets } from "./lib/helper.js";
+import { Message } from "./models/message.model.js";
 
 dotenv.config({
   path:"./.env",
@@ -19,6 +21,7 @@ const port = process.env.PORT || 3000;
  const envMode = process.env.NODE_ENV.trim() || "PRODUCTION";
 
  const adminSecretKey = process.env.ADMIN_SECRET_KEY || "agsdgsjdhg";
+ const userSocketIDs = new Map();
 
 connectDB();
 
@@ -42,13 +45,17 @@ app.get("/",(req,res)=>{
   res.send("Hello World");
 });
 
+io.use((socket,next)=>{})
 io.on("connection",(socket)=>{
 
   const user ={
     _id: "adgshd",
     name: "Namdjhi",
   }
-  console.log("a user connected",socket.id);
+
+  userSocketIDs.set(user._id.toString(),socket.id);
+
+  console.log(userSocketIDs);
 
   socket.on(NEW_MESSAGE,async({chatId,members,message})=>{
 
@@ -62,12 +69,31 @@ io.on("connection",(socket)=>{
       chat: chatId,
       createdAt: new Date().toISOString(),
     };
-    console.log("New Message",messageForRealTime);
-    
-  })
+
+    const messageForDB = {
+      content: message,
+      sender: user._id,
+      chat: chatId,
+    };
+
+    const membersSocket = getSockets(members);
+    io.to(membersSocket).emit(NEW_MESSAGE,{
+      chatId,
+      message:messageForRealTime,
+    });
+    io.to(membersSocket).emit(NEW_MESSAGE_ALERT,{chatId});
+
+    try {
+    await Message.create(messageForDB);
+    } catch (error) {
+      console.log(error);
+      
+    }
+  });
 
   socket.on("disconnect",()=>{
     console.log("user disconnected");
+    userSocketIDs.delete(user._id.toString());
   });
 })
 
@@ -81,4 +107,5 @@ server.listen(port,()=>{
 export{
   envMode,
   adminSecretKey,
+  userSocketIDs,
 }
