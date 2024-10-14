@@ -9,6 +9,8 @@ import adminRoute from "./routes/admin.route.js"
 import { Server } from "socket.io";
 import {createServer} from "http"
 import { v4 as uuid } from "uuid";
+import cors from "cors";
+
 import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.constant.js";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/message.model.js";
@@ -34,10 +36,20 @@ const io = new Server(server,{});
 //middlewares
 app.use(express.json())
 app.use(cookieParser())
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173", 
+      "http://localhost:4173",
+      process.env.CLIENT_URL,
+    ],
+    credentials: true,
+  })
+);
 
-app.use('/user',userRoute);
-app.use('/chat',chatRoute);
-app.use('/admin',adminRoute);
+app.use('/api/v1/user',userRoute);
+app.use('/api/v1/chat',chatRoute);
+app.use('/api/v1/admin',adminRoute);
 
 
 

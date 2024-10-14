@@ -4,7 +4,7 @@ import { TryCatch } from "./error.middleware.js";
 import jwt from "jsonwebtoken";
 
 
-const isAuthenticated = (req,res,next)=>{
+const isAuthenticated = TryCatch((req,res,next)=>{
 
   const token=req.cookies["chattu-token"];
 
@@ -16,7 +16,7 @@ const isAuthenticated = (req,res,next)=>{
   req.user = decodedData._id;
   next();
 
-}
+})
 
 const isAdmin = (req,res,next)=>{
 
