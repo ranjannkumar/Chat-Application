@@ -4,6 +4,8 @@ import axios from "axios"
 import ProtectRoute from './components/auth/ProtectRoute';
 import { LayoutLoader } from './components/layout/Loaders';
 import { server } from './constants/config';
+import {useDispatch, useSelector} from "react-redux";
+import { userNotExists } from './redux/reducers/auth';
 
 const Home=lazy(()=> import('./pages/Home'));
 const Login=lazy(()=> import('./pages/Login'));
@@ -20,19 +22,18 @@ const MessageManagement=lazy(()=>import('./pages/admin/MessageManagement'))
 
 
 
-
-
-
-let user=true;
-
 const App = () => {
+
+  const {user} = useSelector((state)=>state.auth);
+
+  const dispatch = useDispatch();
 
   useEffect(()=>{
     axios
        .get(`${server}/api/v1/user/me`)
        .then((res)=>console.log(res))
-       .catch((err)=>console.log(err))
-  },[]);
+       .catch((err)=>dispatch(userNotExists()));
+  },[dispatch]);
 
   return (
     <BrowserRouter>
