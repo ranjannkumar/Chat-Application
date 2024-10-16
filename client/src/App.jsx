@@ -6,6 +6,7 @@ import { LayoutLoader } from './components/layout/Loaders';
 import { server } from './constants/config';
 import {useDispatch, useSelector} from "react-redux";
 import { userNotExists } from './redux/reducers/auth';
+import {Toaster} from "react-hot-toast";
 
 const Home=lazy(()=> import('./pages/Home'));
 const Login=lazy(()=> import('./pages/Login'));
@@ -24,7 +25,7 @@ const MessageManagement=lazy(()=>import('./pages/admin/MessageManagement'))
 
 const App = () => {
 
-  const {user} = useSelector((state)=>state.auth);
+  const {user,loader} = useSelector((state)=>state.auth);
 
   const dispatch = useDispatch();
 
@@ -35,7 +36,9 @@ const App = () => {
        .catch((err)=>dispatch(userNotExists()));
   },[dispatch]);
 
-  return (
+  return loader ? (
+    <LayoutLoader />
+  ) : (
     <BrowserRouter>
     <Suspense fallback={<LayoutLoader />}>
     <Routes>
@@ -65,6 +68,7 @@ const App = () => {
 
     </Routes>
     </Suspense>
+    <Toaster position='bottom-center' />
     </BrowserRouter>
   )
 }
