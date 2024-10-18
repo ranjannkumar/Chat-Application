@@ -38,6 +38,10 @@ const emitEvent =(req,event,users,data)=>{
   console.log("Emiiting event",event);
 };
 
+const uploadFilesToCloudinary = async(files=[])=>{
+
+};
+
 const deleteFilesFromCloudinary = async(public_ids)=>{
 
 }
@@ -47,5 +51,6 @@ export  {
   sendToken,
   cookieOptions,
   emitEvent,
-  deleteFilesFromCloudinary
+  deleteFilesFromCloudinary,
+  uploadFilesToCloudinary,
 };
