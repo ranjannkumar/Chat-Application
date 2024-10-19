@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { DB_NAME } from "../constants/constants.js";
 import jwt from "jsonwebtoken";
+import { v4 as uuid } from "uuid";
+import { v2 as cloudinary } from "cloudinary";
 
 
 const connectDB=async()=>{
@@ -39,7 +41,31 @@ const emitEvent =(req,event,users,data)=>{
 };
 
 const uploadFilesToCloudinary = async(files=[])=>{
-
+  const uploadPromises = files.map((file)=>{
+    return new Promise((resolve,reject)=>{
+      cloudinary.uploader.upload(
+        file.path,
+        {
+          resource_type: "auto",
+          public_id : uuid(),
+        },
+        (error,result)=>{
+          if(error) return reject(error);
+          resolve(result);
+        }
+      );
+    });
+  });
+  try {
+    const results = await Promise.all(uploadPromises);
+    const formattedResults = results.map((result)=>({
+      public_id: result.public_id,
+      url: result.secure_url,
+    }));
+    return formattedResults;
+  } catch (err) {
+    throw new Error("Error uploading files to cloudinary",err);
+  }
 };
 
 const deleteFilesFromCloudinary = async(public_ids)=>{
