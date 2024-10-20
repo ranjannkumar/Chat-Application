@@ -3,6 +3,7 @@ import { DB_NAME } from "../constants/constants.js";
 import jwt from "jsonwebtoken";
 import { v4 as uuid } from "uuid";
 import { v2 as cloudinary } from "cloudinary";
+import { getBase64 } from "../lib/helper.js";
 
 
 const connectDB=async()=>{
@@ -44,7 +45,7 @@ const uploadFilesToCloudinary = async(files=[])=>{
   const uploadPromises = files.map((file)=>{
     return new Promise((resolve,reject)=>{
       cloudinary.uploader.upload(
-        file.path,
+        getBase64(file),
         {
           resource_type: "auto",
           public_id : uuid(),
