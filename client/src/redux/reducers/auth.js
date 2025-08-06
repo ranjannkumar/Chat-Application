@@ -19,7 +19,7 @@ const authSlice = createSlice({
       state.user = null;
       state.loader= false;
     },
-  },
+  },  
 });
 
 export default authSlice;
