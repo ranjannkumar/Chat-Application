@@ -16,12 +16,16 @@ import {
 import { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import { useErrors } from '../../hooks/hook'
+import { getSocket } from '../../socket'
 
 const AppLayout = () =>(WrappedComponent)=> {
   return (props)=>{
     const params=useParams();
     const dispatch = useDispatch();
     const chatId=params.chatId
+
+    const socket = getSocket();
+    console.log(socket.id)
 
     const { isMobile } = useSelector((state)=>state.misc);
     const { user } = useSelector((state)=>state.auth);
