@@ -1,21 +1,46 @@
-import React, { Fragment, useRef } from 'react'
+import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import AppLayout from '../components/layout/AppLayout'
-import { IconButton, Stack } from '@mui/material';
+import { IconButton, Skeleton, Stack } from '@mui/material';
 import { grayColor, orange } from '../constants/color';
 import { AttachFile as AttachFileIcon, Send as SendIcon } from '@mui/icons-material';
 import { InputBox } from '../components/styles/StyledComponents';
 import FileMenu from '../components/dialogs/FileMenu';
 import { sampleMessage } from '../constants/sampleData';
 import MessageComponent from '../components/shared/MessageComponent';
+import { getSocket } from '../socket';
+import { NEW_MESSAGE } from '../constants/events';
+import { useChatDetailsQuery } from '../redux/api/api';
+import { useSocketEvents } from '../hooks/hook';
 
 
-const user ={
-  _id:"sdfsdsfds",
-  name:"Ranjan"
-}
-const Chat = () => {
+const Chat = ({chatId,user}) => {
   const containerRef = useRef(null);
-  return (
+  const socket = getSocket();
+  const chatDetails =  useChatDetailsQuery({chatId,skip: !chatId});
+  const[message,setMessage] = useState("");
+  const[messages,setMessages] = useState([]);
+
+  const members = chatDetails?.data?.chat?.members;
+
+  const submitHandler = (e)=>{
+    e.preventDefault();
+    if(!message.trim())return;
+    //Emiiting the message to the server
+    socket.emit(NEW_MESSAGE,{chatId,members,message});
+    setMessage("");
+  };
+
+  const newMessageHandler = useCallback((data)=>{
+    setMessages((prev)=>[...prev,data.message]);
+  },[]);
+
+  const eventHandler = {[NEW_MESSAGE]:newMessageHandler};
+
+  useSocketEvents(socket,eventHandler);
+
+  return chatDetails.isLoading ? (
+    <Skeleton />
+  ) : (
     <Fragment>
       <Stack 
         ref={containerRef}
@@ -30,7 +55,7 @@ const Chat = () => {
         }}
       >
         {
-          sampleMessage.map((i)=>(
+          messages.map((i)=>(
             <MessageComponent key={i._id} message={i} user={user} />
           ))
         }
@@ -39,6 +64,7 @@ const Chat = () => {
         style={{
           height:"10%",
         }}
+        onSubmit={submitHandler}
       >
 
         <Stack
@@ -58,7 +84,10 @@ const Chat = () => {
             <AttachFileIcon />
           </IconButton>
 
-          <InputBox placeholder='Type Message Here...' />
+          <InputBox placeholder="Type Message Here..." 
+            value={message} 
+            onChange={(e)=>setMessage(e.target.value)}
+          />
 
           <IconButton
              type='submit'

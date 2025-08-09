@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "SET NODE_ENV=PRODUCTION && node app.js",
-    "dev": "SET NODE_ENV=DEVELOPMENTS && nodemon -r dotenv/config --experimental-json-modules app.js"
+    "dev": "SET NODE_ENV=PRODUCTION && nodemon -r dotenv/config --experimental-json-modules app.js"
   },
   "keywords": [],
   "author": "",
