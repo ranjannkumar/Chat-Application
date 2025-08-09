@@ -5,12 +5,12 @@ import { grayColor, orange } from '../constants/color';
 import { AttachFile as AttachFileIcon, Send as SendIcon } from '@mui/icons-material';
 import { InputBox } from '../components/styles/StyledComponents';
 import FileMenu from '../components/dialogs/FileMenu';
-import { sampleMessage } from '../constants/sampleData';
 import MessageComponent from '../components/shared/MessageComponent';
 import { getSocket } from '../socket';
 import { NEW_MESSAGE } from '../constants/events';
 import { useChatDetailsQuery, useGetMessagesQuery } from '../redux/api/api';
 import { useErrors, useSocketEvents } from '../hooks/hook';
+import { useInfiniteScrollTop } from '6pp';
 
 
 const Chat = ({chatId,user}) => {
@@ -25,6 +25,14 @@ const Chat = ({chatId,user}) => {
   const chatDetails =  useChatDetailsQuery({chatId,skip: !chatId});
 
   const oldMessagesChunk = useGetMessagesQuery({chatId,page});
+
+  const {data:oldMessages,setData:setOldMessages} = useInfiniteScrollTop(
+    containerRef,
+    oldMessagesChunk.data?.totalPages,
+    page,
+    setPage,
+    oldMessagesChunk.data?.messages
+  )
 
 
   const errors = [
@@ -52,7 +60,7 @@ const Chat = ({chatId,user}) => {
 
   useErrors(errors);
 
-  // const allMessages = [...oldMessagesChunk.data.messages, ...messages];
+  const allMessages = [...oldMessages, ...messages];
 
   return chatDetails.isLoading ? (
     <Skeleton />
@@ -70,13 +78,9 @@ const Chat = ({chatId,user}) => {
           overflowY: "auto",
         }}
       >
-        { !oldMessagesChunk.isLoading &&
-          oldMessagesChunk.data?.messages?.map((i)=>(
-            <MessageComponent key={i._id} message={i} user={user} />
-          ))
-        }
+      
         {
-          messages.map((i)=>(
+          allMessages.map((i)=>(
             <MessageComponent key={i._id} message={i} user={user} />
           ))
         }
