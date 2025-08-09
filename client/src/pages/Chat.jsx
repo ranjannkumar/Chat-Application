@@ -9,16 +9,28 @@ import { sampleMessage } from '../constants/sampleData';
 import MessageComponent from '../components/shared/MessageComponent';
 import { getSocket } from '../socket';
 import { NEW_MESSAGE } from '../constants/events';
-import { useChatDetailsQuery } from '../redux/api/api';
-import { useSocketEvents } from '../hooks/hook';
+import { useChatDetailsQuery, useGetMessagesQuery } from '../redux/api/api';
+import { useErrors, useSocketEvents } from '../hooks/hook';
 
 
 const Chat = ({chatId,user}) => {
+
   const containerRef = useRef(null);
   const socket = getSocket();
-  const chatDetails =  useChatDetailsQuery({chatId,skip: !chatId});
+
   const[message,setMessage] = useState("");
   const[messages,setMessages] = useState([]);
+  const[page,setPage] = useState(1);
+
+  const chatDetails =  useChatDetailsQuery({chatId,skip: !chatId});
+
+  const oldMessagesChunk = useGetMessagesQuery({chatId,page});
+
+
+  const errors = [
+    {isError:chatDetails.isError, error:chatDetails.error},
+    {isError:oldMessagesChunk.isError, error:oldMessagesChunk.error}
+  ]
 
   const members = chatDetails?.data?.chat?.members;
 
@@ -38,6 +50,10 @@ const Chat = ({chatId,user}) => {
 
   useSocketEvents(socket,eventHandler);
 
+  useErrors(errors);
+
+  // const allMessages = [...oldMessagesChunk.data.messages, ...messages];
+
   return chatDetails.isLoading ? (
     <Skeleton />
   ) : (
@@ -54,6 +70,11 @@ const Chat = ({chatId,user}) => {
           overflowY: "auto",
         }}
       >
+        { !oldMessagesChunk.isLoading &&
+          oldMessagesChunk.data?.messages?.map((i)=>(
+            <MessageComponent key={i._id} message={i} user={user} />
+          ))
+        }
         {
           messages.map((i)=>(
             <MessageComponent key={i._id} message={i} user={user} />
