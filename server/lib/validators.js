@@ -51,7 +51,7 @@ const removeMemberValidator = ()=>[
 
 
 const sendAttachmentsValidator = ()=>[
-  body("chatid","Please Enter Chat ID").notEmpty(),
+  body("chatId","Please Enter Chat ID").notEmpty(),
   
 ];
 
