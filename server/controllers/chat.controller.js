@@ -5,8 +5,8 @@ import {User} from "../models/user.model.js";
 import {Message} from "../models/message.model.js";
 
 
-import { deleteFilesFromCloudinary, emitEvent } from "../utils/features.js";
-import {ALERT, NEW_ATTACHMENT, NEW_MESSAGE_ALERT, REFETCH_CHATS} from "../constants/events.constant.js"
+import { deleteFilesFromCloudinary, emitEvent, uploadFilesToCloudinary } from "../utils/features.js";
+import {ALERT, NEW_MESSAGE, NEW_MESSAGE_ALERT, REFETCH_CHATS} from "../constants/events.constant.js"
 import { getOtherMember } from "../lib/helper.js";
 
 
@@ -213,11 +213,9 @@ const sendAttachments = TryCatch(async(req,res,next)=>{
   if(!chat) return next( new ErrorHandler("chat not found",404));
   if(files.length <1)
     return next(new ErrorHandler("Please Provide attachments",400));
- 
+   
+  const attachments = await uploadFilesToCloudinary(files);
 
-  //Upload files here
-  const attachments = [];
-  
   const messageForDB = {
     content: "",
     attachments,
@@ -233,7 +231,7 @@ const sendAttachments = TryCatch(async(req,res,next)=>{
   };
   const message = await Message.create(messageForDB);
 
-  emitEvent(req,NEW_ATTACHMENT,chat.members,{
+  emitEvent(req,NEW_MESSAGE,chat.members,{
     message: messageForRealTime,
     chatId,
   });
@@ -342,17 +340,26 @@ const deleteChat = TryCatch(async(req,res,next)=>{
 
 const getMessages = TryCatch(async(req,res,next)=>{
   const chatId = req.params.id;
-  const {page =1} = req.query;
+  const {page = 1} = req.query;
 
   const resultPerPage = 20;
-  const skip = (page-1)*resultPerPage;
+  const skip = (page - 1)*resultPerPage;
+
+  const chat = await Chat.findById(chatId);
+
+  if (!chat) return next(new ErrorHandler("Chat not found", 404));
+
+  if (!chat.members.includes(req.user.toString()))
+    return next(
+      new ErrorHandler("You are not allowed to access this chat", 403)
+    );
 
   const [messages,totalMessagesCount] = await Promise.all([
     Message.find({chat : chatId})
        .sort({createdAt: -1})
        .skip(skip)
        .limit(resultPerPage)
-       .populate("sender","name avatar")
+       .populate("sender","name")
        .lean(),
        Message.countDocuments({chat : chatId})
   ]);
