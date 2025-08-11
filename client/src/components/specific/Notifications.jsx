@@ -14,6 +14,7 @@ import { useAcceptFriendRequestMutation, useGetNotificationsQuery } from '../../
 import { useErrors } from '../../hooks/hook';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsNotification } from '../../redux/reducers/misc';
+import toast from 'react-hot-toast';
 
 const Notifications = () => {
    
