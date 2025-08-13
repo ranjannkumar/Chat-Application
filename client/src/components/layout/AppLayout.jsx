@@ -20,6 +20,8 @@ import { getSocket } from '../../socket'
 import { NEW_MESSAGE_ALERT, NEW_REQUEST, REFETCH_CHATS } from '../../constants/events'
 import { incrementNotification, setNewMessagesAlert } from '../../redux/reducers/chat'
 import { getOrSaveFromStorage } from '../../lib/features'
+import DeleteChatMenu from '../dialogs/DeleteChatMenu'
+import { useRef } from 'react'
 
 const AppLayout = () =>(WrappedComponent)=> {
   return (props)=>{
@@ -27,6 +29,7 @@ const AppLayout = () =>(WrappedComponent)=> {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const chatId=params.chatId
+    const deleteMenuAnchor = useRef(null);
 
     const socket = getSocket();
 
@@ -44,9 +47,10 @@ const AppLayout = () =>(WrappedComponent)=> {
       getOrSaveFromStorage({key:NEW_MESSAGE_ALERT,value:newMessagesAlert})
     },[newMessagesAlert])
 
-    const handleDeleteChat=(e,_id,groupChat)=>{
-      e.preventDefault();
-      console.log("Delete Chat",_id,groupChat)
+    const handleDeleteChat=(e,chatId,groupChat)=>{
+      dispatch(setIsDeleteMenu(true));
+      dispatch(setSelectedDeleteChat({chatId,groupChat}))
+      deleteMenuAnchor.current = e.currentTarget;
     }
 
     const handleMobileClose=()=>dispatch(setIsMobile(false));
@@ -78,6 +82,8 @@ const AppLayout = () =>(WrappedComponent)=> {
       <>
         <Title />
         <Header />
+
+        <DeleteChatMenu dispatch={dispatch} deleteMenuAnchor={deleteMenuAnchor} />
 
         {
           isLoading?<Skeleton/> :(

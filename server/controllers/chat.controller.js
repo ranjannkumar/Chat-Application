@@ -181,9 +181,9 @@ const leaveGroup = TryCatch(async(req,res,next)=>{
   }
   chat.members=remainingMembers;
 
-  chat.members = chat.members.filter(
-    (member)=>member.toString()!== req.user.toString()
-  );
+  // chat.members = chat.members.filter(
+  //   (member)=>member.toString()!== req.user.toString()
+  // );
   const [user] = await Promise.all([User.findById(req.user,"name"),chat.save()])
 
   emitEvent(
@@ -195,7 +195,7 @@ const leaveGroup = TryCatch(async(req,res,next)=>{
   
   return res.status(200).json({
     success: true,
-    message: "Members removed successfully",
+    message: "Leave Group successfully",
   });
 
 });
