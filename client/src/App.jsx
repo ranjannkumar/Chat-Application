@@ -1,12 +1,12 @@
-import React,{lazy, Suspense, useEffect} from 'react'
-import {Routes,Route,BrowserRouter} from 'react-router-dom'
-import axios from "axios"
+import axios from "axios";
+import { lazy, Suspense, useEffect } from 'react';
+import { Toaster } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ProtectRoute from './components/auth/ProtectRoute';
 import { LayoutLoader } from './components/layout/Loaders';
 import { server } from './constants/config';
-import {useDispatch, useSelector} from "react-redux";
 import { userExists, userNotExists } from './redux/reducers/auth';
-import {Toaster} from "react-hot-toast";
 import { SocketProvider } from './socket';
 
 const Home=lazy(()=> import('./pages/Home'));

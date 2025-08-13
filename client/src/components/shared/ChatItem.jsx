@@ -1,8 +1,8 @@
-import React, { memo } from 'react'
-import { Link } from '../styles/StyledComponents'
 import { Box, Stack, Typography } from '@mui/material'
-import AvatarCard from './AvatarCard'
 import { motion } from 'framer-motion'
+import { memo } from 'react'
+import { Link } from '../styles/StyledComponents'
+import AvatarCard from './AvatarCard'
 
 const ChatItem = ({
   avatar=[],

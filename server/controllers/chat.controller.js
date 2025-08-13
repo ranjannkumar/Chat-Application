@@ -181,17 +181,16 @@ const leaveGroup = TryCatch(async(req,res,next)=>{
   }
   chat.members=remainingMembers;
 
-  // chat.members = chat.members.filter(
-  //   (member)=>member.toString()!== req.user.toString()
-  // );
   const [user] = await Promise.all([User.findById(req.user,"name"),chat.save()])
 
   emitEvent(
     req,
     ALERT,
     chat.members,
-    `User ${user.name} has left the group`
-  );
+    {
+    chatId,
+    message: `User ${user.name} has left the group`,
+  });
   
   return res.status(200).json({
     success: true,

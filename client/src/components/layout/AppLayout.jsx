@@ -1,27 +1,23 @@
-import React, { useCallback } from 'react'
-import Header from './Header'
-import Title from '../shared/Title'
-import {Drawer, Grid, Skeleton} from "@mui/material"
-import ChatList from '../specific/ChatList'
-import { sampleChats } from '../../constants/sampleData'
-import { useNavigate, useParams } from 'react-router-dom'
-import Profile from '../specific/Profile'
-import { useMyChatsQuery } from '../../redux/api/api'
+import { Drawer, Grid, Skeleton } from "@mui/material"
+import { useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
+import { NEW_MESSAGE_ALERT, NEW_REQUEST, REFETCH_CHATS } from '../../constants/events'
+import { useErrors, useSocketEvents } from '../../hooks/hook'
+import { getOrSaveFromStorage } from '../../lib/features'
+import { useMyChatsQuery } from '../../redux/api/api'
+import { incrementNotification, setNewMessagesAlert } from '../../redux/reducers/chat'
 import {
   setIsDeleteMenu,
   setIsMobile,
   setSelectedDeleteChat,
-} from "../../redux/reducers/misc";
-import { useEffect } from 'react'
-import toast from 'react-hot-toast'
-import { useErrors, useSocketEvents } from '../../hooks/hook'
+} from "../../redux/reducers/misc"
 import { getSocket } from '../../socket'
-import { NEW_MESSAGE_ALERT, NEW_REQUEST, REFETCH_CHATS } from '../../constants/events'
-import { incrementNotification, setNewMessagesAlert } from '../../redux/reducers/chat'
-import { getOrSaveFromStorage } from '../../lib/features'
 import DeleteChatMenu from '../dialogs/DeleteChatMenu'
-import { useRef } from 'react'
+import Title from '../shared/Title'
+import ChatList from '../specific/ChatList'
+import Profile from '../specific/Profile'
+import Header from './Header'
 
 const AppLayout = () =>(WrappedComponent)=> {
   return (props)=>{
