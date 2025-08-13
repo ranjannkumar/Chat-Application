@@ -14,8 +14,8 @@ import {Link} from '../components/styles/StyledComponents'
 import AvatarCard from '../components/shared/AvatarCard'
 import {sampleChats, sampleUsers} from '../constants/sampleData'
 import UserItem from '../components/shared/UserItem';
-import { useChatDetailsQuery, useMyGroupsQuery } from '../redux/api/api';
-import { useErrors } from '../hooks/hook';
+import { useChatDetailsQuery, useMyGroupsQuery, useRenameGroupMutation } from '../redux/api/api';
+import { useAsyncMutation, useErrors } from '../hooks/hook';
 import { LayoutLoader } from '../components/layout/Loaders';
 
 
@@ -43,6 +43,8 @@ const Groups = () => {
     {chatId,populate:true},
     {skip: !chatId}
   );
+
+  const [updateGroup,isLoadingGroupName] = useAsyncMutation(useRenameGroupMutation);
 
   const[isMobileMenuOpen,setIsMobileMenuOpen] = useState(false);
   const[isEdit,setIsEdit] = useState(false);
@@ -79,7 +81,7 @@ const Groups = () => {
       setMembers([]);
       setIsEdit(false);
     };
-    
+
   },[groupDetails.data]);
 
   const navigateBack=()=>{
@@ -94,7 +96,11 @@ const Groups = () => {
 
   const updateGroupName=()=>{
     setIsEdit(false);
-  }
+    updateGroup("Updating Group Name...",{
+      chatId,
+      name: groupNameUpdatedValue,
+    });
+  };
 
   const openConfirmDeleteHandler=()=>{
     setConfirmDeleteDialog(true);
@@ -185,6 +191,7 @@ const Groups = () => {
           />
             <IconButton 
               onClick={updateGroupName}
+              disabled={isLoadingGroupName}
             >
               <DoneIcon />
             </IconButton>
@@ -192,7 +199,7 @@ const Groups = () => {
       ) : (
         <>
          <Typography variant='h4'>{groupName}</Typography>
-         <IconButton onClick={()=>setIsEdit(true)}>
+         <IconButton disabled={isLoadingGroupName} onClick={()=>setIsEdit(true)}>
            <EditIcon />
           </IconButton>
         </>
