@@ -7,7 +7,7 @@ import ProtectRoute from './components/auth/ProtectRoute';
 import { LayoutLoader } from './components/layout/Loaders';
 import { server } from './constants/config';
 import { userExists, userNotExists } from './redux/reducers/auth';
-import { SocketProvider } from './socket';
+import { SocketProvider } from './socket'; 
 
 const Home=lazy(()=> import('./pages/Home'));
 const Login=lazy(()=> import('./pages/Login'));
