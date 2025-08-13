@@ -1,23 +1,22 @@
-import React, { lazy, memo, Suspense, useEffect, useState } from 'react'
-import {Backdrop, Box, Button, Drawer, Grid, IconButton, Menu, Stack, TextField, Tooltip, Typography} from '@mui/material'
-import{
+import {
   Add as AddIcon,
   Delete as DeleteIcon,
   Done as DoneIcon,
   Edit as EditIcon,
   KeyboardBackspace as KeyboardBackspaceIcon,
   Menu as MenuIcon,
-} from '@mui/icons-material'
-import { bgGradient, matBlack } from '../constants/color';
-import {useNavigate,useSearchParams} from 'react-router-dom'
-import {Link} from '../components/styles/StyledComponents'
-import AvatarCard from '../components/shared/AvatarCard'
-import {sampleChats, sampleUsers} from '../constants/sampleData'
-import UserItem from '../components/shared/UserItem';
-import { useAddGroupMembersMutation, useChatDetailsQuery, useMyGroupsQuery, useRemoveGroupMemberMutation, useRenameGroupMutation } from '../redux/api/api';
-import { useAsyncMutation, useErrors } from '../hooks/hook';
-import { LayoutLoader } from '../components/layout/Loaders';
+} from '@mui/icons-material';
+import { Backdrop, Box, Button, CircularProgress, Drawer, Grid, IconButton, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import { lazy, memo, Suspense, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { LayoutLoader } from '../components/layout/Loaders';
+import AvatarCard from '../components/shared/AvatarCard';
+import UserItem from '../components/shared/UserItem';
+import { Link } from '../components/styles/StyledComponents';
+import { bgGradient, matBlack } from '../constants/color';
+import { useAsyncMutation, useErrors } from '../hooks/hook';
+import { useChatDetailsQuery, useDeleteChatMutation, useMyGroupsQuery, useRemoveGroupMemberMutation, useRenameGroupMutation } from '../redux/api/api';
 import { setIsAddMember } from '../redux/reducers/misc';
 
 
@@ -47,6 +46,9 @@ const Groups = () => {
   const [updateGroup,isLoadingGroupName] = useAsyncMutation(useRenameGroupMutation);
 
   const [removeMember,isLoadingRemoveMember] = useAsyncMutation(useRemoveGroupMemberMutation);
+
+  const [deleteGroup,isLoadingDeleteGroup] = useAsyncMutation(useDeleteChatMutation);
+
 
   const[isMobileMenuOpen,setIsMobileMenuOpen] = useState(false);
   const[isEdit,setIsEdit] = useState(false);
@@ -106,7 +108,6 @@ const Groups = () => {
 
   const openConfirmDeleteHandler=()=>{
     setConfirmDeleteDialog(true);
-    console.log("delete group");
   }
 
   const closeConfirmDeleteHandler=()=>{
@@ -118,8 +119,9 @@ const Groups = () => {
   };
 
   const deleteHandler=()=>{
-    console.log("Delete Handler");
+    deleteGroup("Deleting Group...",chatId);
     closeConfirmDeleteHandler();
+    navigate("/groups");
   }
 
   const removeMemberHandler=(userId)=>{
@@ -296,7 +298,9 @@ const Groups = () => {
                overflow={"auto"}
              >
               {/* {members} */}
-              {
+              {isLoadingRemoveMember ? (
+                <CircularProgress />
+              ) :(
                 members.map((i)=>(
                   <UserItem 
                      user={i}
@@ -310,7 +314,7 @@ const Groups = () => {
                      handler={removeMemberHandler}
                   />
                 ))
-              }
+              )}
              </Stack>
              {ButtonGroup}
            </>
