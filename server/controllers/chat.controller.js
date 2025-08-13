@@ -139,6 +139,8 @@ const removeMember = TryCatch(async(req,res,next)=>{
     return next(new ErrorHandler("You are not allowed to remove members",403));
   if(chat.members.length<=3)
     return next(new ErrorHandler("Group must have at least 3 members",400));
+  
+  const allChatMembers = chat.members.map((i) => i.toString());
 
   chat.members = chat.members.filter(
     (member)=>member.toString()!==userId.toString()
@@ -148,10 +150,11 @@ const removeMember = TryCatch(async(req,res,next)=>{
   emitEvent(
     req,
     ALERT,
-    chat.members,
-    `${userThatWillBeRemoved.name} has been removed from the group`
-  );
-  emitEvent(req,REFETCH_CHATS,chat.members);
+    chat.members,{
+     message:`${userThatWillBeRemoved.name} has been removed from the group`,
+     chatId
+  });
+  emitEvent(req,REFETCH_CHATS,allChatMembers);
   return res.status(200).json({
     success: true,
     message: "Members removed successfully",

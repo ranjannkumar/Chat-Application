@@ -38,8 +38,8 @@ const addMemberValidator = ()=>[
   body("members")
      .notEmpty()
      .withMessage("Please Enter Members")
-     .isArray({min:2,max: 97})
-     .withMessage("Members must be 2-97"),
+     .isArray({min:1,max: 97})
+     .withMessage("Members must be 1-97"),
 ];
 
 const removeMemberValidator = ()=>[

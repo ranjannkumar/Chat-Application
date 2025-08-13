@@ -14,9 +14,11 @@ import {Link} from '../components/styles/StyledComponents'
 import AvatarCard from '../components/shared/AvatarCard'
 import {sampleChats, sampleUsers} from '../constants/sampleData'
 import UserItem from '../components/shared/UserItem';
-import { useChatDetailsQuery, useMyGroupsQuery, useRenameGroupMutation } from '../redux/api/api';
+import { useAddGroupMembersMutation, useChatDetailsQuery, useMyGroupsQuery, useRemoveGroupMemberMutation, useRenameGroupMutation } from '../redux/api/api';
 import { useAsyncMutation, useErrors } from '../hooks/hook';
 import { LayoutLoader } from '../components/layout/Loaders';
+import { useDispatch, useSelector } from 'react-redux';
+import { setIsAddMember } from '../redux/reducers/misc';
 
 
 const ConfirmDeleteDialog = lazy(()=>
@@ -27,15 +29,13 @@ const AddMemberDialog=lazy(()=>
   import("../components/dialogs/AddMemberDialog")
 )
 
-
-const isAddMember =false;
-
-
 const Groups = () => {
 
   const chatId=useSearchParams()[0].get("group");
-
   const navigate= useNavigate();
+  const dispatch = useDispatch();
+
+  const {isAddMember} = useSelector((state)=>state.misc);
 
   const myGroups = useMyGroupsQuery("");
 
@@ -45,6 +45,8 @@ const Groups = () => {
   );
 
   const [updateGroup,isLoadingGroupName] = useAsyncMutation(useRenameGroupMutation);
+
+  const [removeMember,isLoadingRemoveMember] = useAsyncMutation(useRemoveGroupMemberMutation);
 
   const[isMobileMenuOpen,setIsMobileMenuOpen] = useState(false);
   const[isEdit,setIsEdit] = useState(false);
@@ -112,7 +114,7 @@ const Groups = () => {
   }
 
   const openAddMemberHandler=()=>{
-    console.log("Add Member");
+    dispatch(setIsAddMember(true));
   };
 
   const deleteHandler=()=>{
@@ -120,8 +122,8 @@ const Groups = () => {
     closeConfirmDeleteHandler();
   }
 
-  const removeMemberHandler=(id)=>{
-    console.log("Remove member",id);
+  const removeMemberHandler=(userId)=>{
+    removeMember("Removing Member...",{chatId,userId});
   }
 
   useEffect(()=>{
@@ -318,7 +320,7 @@ const Groups = () => {
       {
         isAddMember && (
           <Suspense fallback={<Backdrop open />}>
-            <AddMemberDialog />
+            <AddMemberDialog chatId={chatId} />
           </Suspense>
         )
       }
