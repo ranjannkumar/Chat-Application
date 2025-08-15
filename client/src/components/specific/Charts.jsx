@@ -1,19 +1,17 @@
-import React from 'react'
-import {Line,Doughnut} from "react-chartjs-2"
 import {
-   CategoryScale, 
-   Chart as ChartJS,
-   Tooltip,
-   Filler,
-   LinearScale,
-   PointElement,
-   LineElement,
-   ArcElement,
-   Legend,
-  } from 'chart.js'
+  ArcElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Tooltip,
+} from 'chart.js';
+import { Doughnut, Line } from "react-chartjs-2";
 import { orange, orangeLight, purple, purpleLight } from '../../constants/color';
 import { getLast7Days } from '../../lib/features.js';
-import zIndex from '@mui/material/styles/zIndex.js';
 
 ChartJS.register(
     Tooltip,
@@ -61,7 +59,7 @@ const LineChart = ({value=[]}) => {
     datasets:[
     {
       data:value,
-      label:"Revenue",
+      label:"Messages",
       fill:true,
       backgroundColor: purpleLight,
       borderColor: purple,
@@ -107,4 +105,4 @@ const DoughnutChart = ({value=[],labels=[]}) => {
   )
 }
 
-export {LineChart,DoughnutChart}
+export { DoughnutChart, LineChart };

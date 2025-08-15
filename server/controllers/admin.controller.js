@@ -44,7 +44,7 @@ const adminLogout = TryCatch(async(req,res,next)=>{
     });
 });
 
-const getAdminData = TryCatch(async(rrq,res,next)=>{
+const getAdminData = TryCatch(async(req,res,next)=>{
   return res.status(200).json({
     admin: true,
   });
@@ -119,13 +119,13 @@ const allMessages = TryCatch(async(req,res)=>{
       .populate("chat","groupChat");
 
   const transformedMessages = messages.map(
-    ({ content,attachments,_id,sender,createdAt,char})=>({
+    ({ content,attachments,_id,sender,createdAt,chat})=>({
       _id,
       attachments,
       content,
       createdAt,
-      chat: Chat._id,
-      groupChat:Chat.groupChat,
+      chat: chat._id,
+      groupChat:chat.groupChat,
       sender: {
         _id: sender._id,
         name: sender.name,
@@ -141,7 +141,7 @@ const allMessages = TryCatch(async(req,res)=>{
 });
 
 const getDashboardStats = TryCatch(async(req,res)=>{
-   const [groupsCOunt,usersCount,messagesCount,totalChatsCount]=
+   const [groupsCount,usersCount,messagesCount,totalChatsCount]=
      await Promise.all([
       Chat.countDocuments({groupChat:true}),
       User.countDocuments(),
@@ -151,6 +151,7 @@ const getDashboardStats = TryCatch(async(req,res)=>{
 
     const today = new Date();
     const last7Days = new Date();
+    last7Days.setDate(last7Days.getDate() - 7);
     const last7DaysMessages = await Message.find({
       createdAt: {
         $gte: last7Days,
@@ -163,13 +164,13 @@ const getDashboardStats = TryCatch(async(req,res)=>{
 
     last7DaysMessages.forEach((message)=>{
       const indexApprox =
-       (today.getTime()-message.createdAt.getTime())/dayInMIlliSeconds;
+       (today.getTime() - message.createdAt.getTime()) / dayInMIlliSeconds;
       const index = Math.floor(indexApprox);
       messages[6-index]++;
     });
 
     const stats ={
-      groupsCOunt,
+      groupsCount,
       usersCount,
       messagesCount,
       totalChatsCount,

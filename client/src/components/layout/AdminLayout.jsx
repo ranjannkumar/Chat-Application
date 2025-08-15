@@ -1,17 +1,17 @@
-import { Box, Drawer, Grid, IconButton, Stack, styled, Typography } from '@mui/material'
-import React, { useState } from 'react'
-import { grayColor, matBlack } from '../../constants/color'
 import {
   Close as CloseIcon,
-  Menu as MenuIcon,
   Dashboard as DashboardIcon,
-  ManageAccounts as ManageAccountsIcon,
-  Groups as GroupsIcon,
-  Message as MessageIcon,
   ExitToApp as ExitToAppIcon,
+  Groups as GroupsIcon,
+  ManageAccounts as ManageAccountsIcon,
+  Menu as MenuIcon,
+  Message as MessageIcon,
 } from '@mui/icons-material'
-import { useLocation,Link as LinkComponent, Navigate } from 'react-router-dom'
+import { Box, Drawer, Grid, IconButton, Stack, styled, Typography } from '@mui/material'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Link as LinkComponent, Navigate, useLocation } from 'react-router-dom'
+import { grayColor, matBlack } from '../../constants/color'
 import { adminLogout } from '../../redux/thunks/admin'
 
 
@@ -67,7 +67,7 @@ const Sidebar=({w="100%"})=>{
        variant='h5'
        textTransform={"uppercase"}
       >
-        chattu
+        Chattu
       </Typography>
 
       <Stack spacing={"1rem"}>

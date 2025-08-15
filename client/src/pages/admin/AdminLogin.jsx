@@ -1,10 +1,10 @@
 import { useInputValidation } from '6pp'
 import { Button, Container, Paper, TextField, Typography } from '@mui/material'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 import { bgGradient } from '../../constants/color'
-import {useDispatch, useSelector} from 'react-redux'
 import { adminLogin, getAdmin } from '../../redux/thunks/admin'
-import { useEffect } from 'react'
 
 
 const AdminLogin = () => {
