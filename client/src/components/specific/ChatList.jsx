@@ -1,4 +1,3 @@
-import React from 'react'
 import { Stack } from '@mui/material'
 import ChatItem from '../shared/ChatItem'
 
@@ -7,7 +6,7 @@ const ChatList  = ({
   chats=[],
   chatId,
   onlineUsers=[],
-  newMesssagesAlert=[
+  newMessagesAlert=[
     {
       chatId: "",
       count: 0,
@@ -26,11 +25,11 @@ const ChatList  = ({
         chats?.map((data,index)=>{
           const{avatar,_id,name,groupChat,members}=data
 
-          const newMessageAlert=newMesssagesAlert.find(
+          const newMessageAlert=newMessagesAlert.find(
             ({chatId}) =>chatId === _id
           )
 
-          const isOnline=members?.some((member)=> onlineUsers.includes(_id))
+          const isOnline=members?.some((member)=> onlineUsers.includes(member))
 
           return (
           <ChatItem 

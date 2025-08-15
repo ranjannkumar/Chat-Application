@@ -1,8 +1,8 @@
 import { Drawer, Grid, Skeleton } from "@mui/material"
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import { NEW_MESSAGE_ALERT, NEW_REQUEST, REFETCH_CHATS } from '../../constants/events'
+import { NEW_MESSAGE_ALERT, NEW_REQUEST, ONLINE_USERS, REFETCH_CHATS } from '../../constants/events'
 import { useErrors, useSocketEvents } from '../../hooks/hook'
 import { getOrSaveFromStorage } from '../../lib/features'
 import { useMyChatsQuery } from '../../redux/api/api'
@@ -26,6 +26,8 @@ const AppLayout = () =>(WrappedComponent)=> {
     const dispatch = useDispatch();
     const chatId=params.chatId
     const deleteMenuAnchor = useRef(null);
+
+    const[onlineUsers,setOnlineUsers] = useState([]);
 
     const socket = getSocket();
 
@@ -65,11 +67,16 @@ const AppLayout = () =>(WrappedComponent)=> {
       navigate("/")
     },[refetch,navigate]);
 
+    const onlineUsersListener = useCallback((data)=>{
+      setOnlineUsers(data);
+    },[]);
+
 
     const eventHandlers = {
       [NEW_MESSAGE_ALERT]:newMessageAlertListener,
       [NEW_REQUEST] : newRequestListener,
       [REFETCH_CHATS]: refetchListener,
+      [ONLINE_USERS]: onlineUsersListener,
     };
     
     useSocketEvents(socket,eventHandlers);
@@ -89,7 +96,8 @@ const AppLayout = () =>(WrappedComponent)=> {
                 chats={data?.chats}
                 chatId={chatId}
                 handleDeleteChat={handleDeleteChat}
-                newMesssagesAlert={newMessagesAlert}
+                newMessagesAlert={newMessagesAlert}
+                onlineUsers={onlineUsers}
                />
             </Drawer>
           )
@@ -112,7 +120,8 @@ const AppLayout = () =>(WrappedComponent)=> {
                 chats={data?.chats}
                 chatId={chatId}
                 handleDeleteChat={handleDeleteChat}
-                newMesssagesAlert={newMessagesAlert}
+                newMessagesAlert={newMessagesAlert}
+                onlineUsers={onlineUsers}
                />
               )
             }
